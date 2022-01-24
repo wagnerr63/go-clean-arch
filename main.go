@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
+	"go-clean-arch/configs"
+	"go-clean-arch/controllers"
 	"go-clean-arch/repositories"
 	"go-clean-arch/usecases"
-	"go-clean-arch/usecases/user"
-	"go-clean-arch/configs"
 )
 
 func main() {
@@ -13,11 +12,12 @@ func main() {
 
 	usecases := usecases.New(usecases.Options{Repo: repositories})
 
-	usecases.User.Create(user.ICreateUserUseCaseDTO{Name: "Wagner", Email: "wagner@mail.com", Password: "mudar@123"})
-
-	fmt.Println(usecases.User.FindAll())
+	controllers := controllers.New(controllers.Options{Usecases: usecases})
 
 	router := configs.InitTools()
+
+	router.POST("/users", controllers.User.Create)
+	router.GET("/users", controllers.User.ListAll)
 
 	router.SERVE(":3333")
 }
