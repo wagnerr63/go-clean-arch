@@ -33,3 +33,15 @@ func (repo *repoGorm) FindAll() ([]entities.User, error) {
 
 	return users, nil
 }
+
+func (repo *repoGorm) FindById(id string) (entities.User, error) {
+	var userById entities.User
+
+	repo.reader.Table("users").Find(&userById)
+
+	if repo.reader.Error != nil {
+		return entities.User{}, errors.New("User not found.")
+	}
+
+	return userById, nil
+}

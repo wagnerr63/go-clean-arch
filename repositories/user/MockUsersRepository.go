@@ -18,3 +18,7 @@ func (repo *MockUsersRepository) Create(user entities.User) error {
 	repo.users = append(repo.users, user)
 	return nil
 }
+
+func (repo *MockUsersRepository) FindById(id string) (entities.User, error) {
+	return entities.User{}, nil
+}
