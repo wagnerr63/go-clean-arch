@@ -5,10 +5,22 @@ import (
 	"go-clean-arch/controllers"
 	"go-clean-arch/repositories"
 	"go-clean-arch/usecases"
+	"log"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	repositories := repositories.New()
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	repositories := repositories.New(repositories.Options{
+		WriterGorm: configs.GetWriterGorm(),
+		ReaderGorm: configs.GetReaderGorm(),
+	})
 
 	usecases := usecases.New(usecases.Options{Repo: repositories})
 
