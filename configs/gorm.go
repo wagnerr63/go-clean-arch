@@ -1,7 +1,6 @@
 package configs
 
 import (
-	"fmt"
 	"os"
 
 	"gorm.io/driver/postgres"
@@ -31,8 +30,6 @@ func GetWriterGorm() *gorm.DB {
 	var dbname string = os.Getenv("DBNAME")
 	var user string = os.Getenv("DBUSER")
 	var password string = os.Getenv("DBPASSWORD")
-
-	fmt.Println("user " + user)
 
 	dsn := "host=" + host + " user=" + user + " password=" + password + " dbname=" + dbname + " port=" + port + " sslmode=disable TimeZone=Asia/Shanghai"
 	writer, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})

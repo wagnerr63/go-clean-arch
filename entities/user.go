@@ -24,5 +24,5 @@ type UserResponse struct {
 }
 
 func NewUser() User {
-	return User{ID: uuid.NewString(), CreatedAt: time.Now().String()}
+	return User{ID: uuid.NewString(), CreatedAt: time.Now().Format("2006-01-02 15:04:05")}
 }
