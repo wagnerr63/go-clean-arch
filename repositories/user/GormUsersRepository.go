@@ -45,3 +45,15 @@ func (repo *repoGorm) FindById(id string) (entities.User, error) {
 
 	return userById, nil
 }
+
+func (repo *repoGorm) FindByEmail(email string) (entities.User, error) {
+	var userByEmail entities.User
+
+	repo.reader.Table("users").Where("email = ?", email).Find(&userByEmail)
+
+	if repo.reader.Error != nil {
+		return entities.User{}, errors.New("User not found.")
+	}
+
+	return userByEmail, nil
+}
