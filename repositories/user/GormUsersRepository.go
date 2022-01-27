@@ -57,3 +57,13 @@ func (repo *repoGorm) FindByEmail(email string) (entities.User, error) {
 
 	return userByEmail, nil
 }
+
+func (repo *repoGorm) Update(user entities.User) error {
+	repo.writer.Table("users").Save(&user)
+
+	if repo.writer.Error != nil {
+		return errors.New("User update error")
+	}
+
+	return nil
+}
