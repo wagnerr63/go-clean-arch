@@ -26,3 +26,7 @@ func (repo *MockUsersRepository) FindById(id string) (entities.User, error) {
 func (repo *MockUsersRepository) FindByEmail(id string) (entities.User, error) {
 	return entities.User{}, nil
 }
+
+func (repo *MockUsersRepository) Update(user entities.User) error {
+	return nil
+}
