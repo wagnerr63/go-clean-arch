@@ -10,4 +10,5 @@ type IUsersRepository interface {
 	FindByEmail(email string) (entities.User, error)
 	Create(user entities.User) error
 	Update(user entities.User) error
+	Delete(id string) error
 }

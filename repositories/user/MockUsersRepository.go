@@ -30,3 +30,7 @@ func (repo *MockUsersRepository) FindByEmail(id string) (entities.User, error) {
 func (repo *MockUsersRepository) Update(user entities.User) error {
 	return nil
 }
+
+func (repo *MockUsersRepository) Delete(id string) error {
+	return nil
+}
