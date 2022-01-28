@@ -24,6 +24,7 @@ type IUsersUseCases interface {
 	Create(data ICreateUserUseCaseDTO) error
 	FindAll() ([]entities.User, error)
 	Update(data IUpdateUserUseCaseDTO) error
+	Delete(id string) error
 }
 
 type userUserCases struct {
@@ -52,7 +53,7 @@ func (usecase *userUserCases) FindAll() ([]entities.User, error) {
 func (usecase *userUserCases) Update(data IUpdateUserUseCaseDTO) error {
 	_, err := usecase.repositories.User.FindById(data.ID)
 	if err != nil {
-		return errors.New("User not found.")
+		return errors.New("user not found")
 	}
 
 	err = usecase.repositories.User.Update(entities.User{
@@ -64,8 +65,17 @@ func (usecase *userUserCases) Update(data IUpdateUserUseCaseDTO) error {
 	})
 
 	if err != nil {
-		return errors.New("Error trying to update user")
+		return errors.New("error trying to update user")
 	}
 
 	return nil
+}
+
+func (usecase *userUserCases) Delete(id string) error {
+	_, err := usecase.repositories.User.FindById(id)
+	if err != nil {
+		return errors.New("user not found")
+	}
+
+	return usecase.repositories.User.Delete(id)
 }

@@ -69,10 +69,10 @@ func (repo *repoGorm) Update(user entities.User) error {
 }
 
 func (repo *repoGorm) Delete(id string) error {
-	repo.writer.Table("users").Delete(id)
+	repo.writer.Table("users").Delete(entities.User{ID: id})
 
 	if repo.writer.Error != nil {
-		return errors.New("User delete error")
+		return errors.New("user delete error")
 	}
 
 	return nil

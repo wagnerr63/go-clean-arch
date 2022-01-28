@@ -14,6 +14,7 @@ type IUserController interface {
 	Create(w http.ResponseWriter, r *http.Request)
 	ListAll(w http.ResponseWriter, r *http.Request)
 	Update(w http.ResponseWriter, r *http.Request)
+	Delete(w http.ResponseWriter, r *http.Request)
 }
 
 type controllers struct {
@@ -65,4 +66,13 @@ func (ctr *controllers) Update(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	return
+}
+
+func (ctr *controllers) Delete(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+
+	userId := params["id"]
+	ctr.usecases.User.Delete(userId)
+
+	w.WriteHeader(http.StatusNoContent)
 }

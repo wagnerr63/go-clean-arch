@@ -31,6 +31,7 @@ func main() {
 	router.POST("/users", controllers.User.Create)
 	router.GET("/users", controllers.User.ListAll)
 	router.PUT("/users/{id}", controllers.User.Update)
+	router.DELETE("/users/{id}", controllers.User.Delete)
 
 	router.SERVE(":3333")
 }
