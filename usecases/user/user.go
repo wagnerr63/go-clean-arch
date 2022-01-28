@@ -56,6 +56,7 @@ func (usecase *userUserCases) Update(data IUpdateUserUseCaseDTO) error {
 	}
 
 	err = usecase.repositories.User.Update(entities.User{
+		ID:       data.ID,
 		Name:     data.Name,
 		Email:    data.Email,
 		Password: data.Password,

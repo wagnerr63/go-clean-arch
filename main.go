@@ -30,6 +30,7 @@ func main() {
 
 	router.POST("/users", controllers.User.Create)
 	router.GET("/users", controllers.User.ListAll)
+	router.PUT("/users/{id}", controllers.User.Update)
 
 	router.SERVE(":3333")
 }

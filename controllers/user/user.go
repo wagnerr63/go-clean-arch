@@ -2,16 +2,18 @@ package user
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"go-clean-arch/usecases"
 	"go-clean-arch/usecases/user"
+
+	"github.com/gorilla/mux"
 )
 
 type IUserController interface {
 	Create(w http.ResponseWriter, r *http.Request)
 	ListAll(w http.ResponseWriter, r *http.Request)
+	Update(w http.ResponseWriter, r *http.Request)
 }
 
 type controllers struct {
@@ -25,8 +27,6 @@ func New(usecases *usecases.Container) IUserController {
 func (ctr *controllers) Create(w http.ResponseWriter, r *http.Request) {
 	var userData user.ICreateUserUseCaseDTO
 	json.NewDecoder(r.Body).Decode(&userData)
-
-	fmt.Println(userData)
 
 	err := ctr.usecases.User.Create(userData)
 	if err != nil {
@@ -45,4 +45,24 @@ func (ctr *controllers) ListAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(users)
+}
+
+func (ctr *controllers) Update(w http.ResponseWriter, r *http.Request) {
+	var userData user.IUpdateUserUseCaseDTO
+	params := mux.Vars(r)
+
+	userId := params["id"]
+
+	json.NewDecoder(r.Body).Decode(&userData)
+	userData.ID = userId
+
+	err := ctr.usecases.User.Update(userData)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	return
 }
