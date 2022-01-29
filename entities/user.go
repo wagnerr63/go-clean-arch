@@ -11,7 +11,7 @@ type User struct {
 	Name      string `json:"name"`
 	Email     string `json:"email"`
 	Password  string `json:"-"`
-	IsAdmin   bool   `json:"isAdmin"`
+	IsAdmin   bool   `json:"is_admin"`
 	CreatedAt string `db:"created_at" json:"created_at"`
 }
 

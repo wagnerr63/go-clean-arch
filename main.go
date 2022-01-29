@@ -30,6 +30,7 @@ func main() {
 
 	router.POST("/users", controllers.User.Create)
 	router.GET("/users", controllers.User.ListAll)
+	router.GET("/users/{id}", controllers.User.GetInfo)
 	router.PUT("/users/{id}", controllers.User.Update)
 	router.DELETE("/users/{id}", controllers.User.Delete)
 

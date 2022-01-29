@@ -23,6 +23,7 @@ type IUpdateUserUseCaseDTO struct {
 type IUsersUseCases interface {
 	Create(data ICreateUserUseCaseDTO) error
 	FindAll() ([]entities.User, error)
+	GetInfo(id string) (entities.User, error)
 	Update(data IUpdateUserUseCaseDTO) error
 	Delete(id string) error
 }
@@ -48,6 +49,10 @@ func (usecase *userUserCases) Create(data ICreateUserUseCaseDTO) error {
 
 func (usecase *userUserCases) FindAll() ([]entities.User, error) {
 	return usecase.repositories.User.FindAll()
+}
+
+func (usecase *userUserCases) GetInfo(id string) (entities.User, error) {
+	return usecase.repositories.User.FindById(id)
 }
 
 func (usecase *userUserCases) Update(data IUpdateUserUseCaseDTO) error {

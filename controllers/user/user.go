@@ -13,6 +13,7 @@ import (
 type IUserController interface {
 	Create(w http.ResponseWriter, r *http.Request)
 	ListAll(w http.ResponseWriter, r *http.Request)
+	GetInfo(w http.ResponseWriter, r *http.Request)
 	Update(w http.ResponseWriter, r *http.Request)
 	Delete(w http.ResponseWriter, r *http.Request)
 }
@@ -46,6 +47,20 @@ func (ctr *controllers) ListAll(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(users)
+}
+
+func (ctr *controllers) GetInfo(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	userId := params["id"]
+
+	user, err := ctr.usecases.User.GetInfo(userId)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(user)
 }
 
 func (ctr *controllers) Update(w http.ResponseWriter, r *http.Request) {
