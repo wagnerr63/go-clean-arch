@@ -1,0 +1,2 @@
+- Logon and generate a JWT token
+- Middleware all routes

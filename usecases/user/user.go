@@ -5,6 +5,7 @@ import (
 	"go-clean-arch/entities"
 	"go-clean-arch/repositories"
 	"go-clean-arch/utils/hasher"
+	"go-clean-arch/utils/token"
 )
 
 type ICreateUserUseCaseDTO struct {
@@ -21,20 +22,32 @@ type IUpdateUserUseCaseDTO struct {
 	IsAdmin  bool   `json:"is_admin,omitempty"`
 }
 
+type IAuthUserUseCaseDTO struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type IAuthResponse struct {
+	User  entities.User
+	Token string `json:"token"`
+}
+
 type IUsersUseCases interface {
 	Create(data ICreateUserUseCaseDTO) error
 	FindAll() ([]entities.User, error)
 	GetInfo(id string) (entities.User, error)
 	Update(data IUpdateUserUseCaseDTO) error
 	Delete(id string) error
+	Auth(credentials IAuthUserUseCaseDTO) (IAuthResponse, error)
 }
 
 type userUserCases struct {
 	repositories *repositories.Container
+	tokenHash    token.TokenHash
 }
 
-func New(repo *repositories.Container) IUsersUseCases {
-	return &userUserCases{repositories: repo}
+func New(repo *repositories.Container, token token.TokenHash) IUsersUseCases {
+	return &userUserCases{repositories: repo, tokenHash: token}
 }
 
 func (usecase *userUserCases) Create(data ICreateUserUseCaseDTO) error {
@@ -42,7 +55,6 @@ func (usecase *userUserCases) Create(data ICreateUserUseCaseDTO) error {
 	user.Name = data.Name
 	user.Email = data.Email
 
-	// TODO: hash password
 	hasherBcrypt := hasher.NewBcryptHasher()
 	passwordHashed, errHash := hasherBcrypt.Generate(data.Password)
 	if errHash != nil {
@@ -89,4 +101,25 @@ func (usecase *userUserCases) Delete(id string) error {
 	}
 
 	return usecase.repositories.User.Delete(id)
+}
+
+func (usecase *userUserCases) Auth(credentials IAuthUserUseCaseDTO) (IAuthResponse, error) {
+	userByEmail, err := usecase.repositories.User.FindByEmail(credentials.Email)
+	if err != nil {
+		return IAuthResponse{}, errors.New("user not found")
+	}
+
+	hasherBcrypt := hasher.NewBcryptHasher()
+	err = hasherBcrypt.Compare(userByEmail.Password, credentials.Password)
+	if err != nil {
+		return IAuthResponse{}, err
+	}
+
+	token, err := usecase.tokenHash.Encrypt(userByEmail)
+	if err != nil {
+		return IAuthResponse{}, err
+	}
+
+	return IAuthResponse{User: userByEmail, Token: token}, nil
+
 }

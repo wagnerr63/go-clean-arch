@@ -16,6 +16,7 @@ type IUserController interface {
 	GetInfo(w http.ResponseWriter, r *http.Request)
 	Update(w http.ResponseWriter, r *http.Request)
 	Delete(w http.ResponseWriter, r *http.Request)
+	Auth(w http.ResponseWriter, r *http.Request)
 }
 
 type controllers struct {
@@ -90,4 +91,20 @@ func (ctr *controllers) Delete(w http.ResponseWriter, r *http.Request) {
 	ctr.usecases.User.Delete(userId)
 
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func (ctr *controllers) Auth(w http.ResponseWriter, r *http.Request) {
+	var credentials user.IAuthUserUseCaseDTO
+	json.NewDecoder(r.Body).Decode(&credentials)
+
+	session, err := ctr.usecases.User.Auth(credentials)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(session)
+
 }
