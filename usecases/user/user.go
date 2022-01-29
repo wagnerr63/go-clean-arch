@@ -4,6 +4,7 @@ import (
 	"errors"
 	"go-clean-arch/entities"
 	"go-clean-arch/repositories"
+	"go-clean-arch/utils/hasher"
 )
 
 type ICreateUserUseCaseDTO struct {
@@ -42,7 +43,12 @@ func (usecase *userUserCases) Create(data ICreateUserUseCaseDTO) error {
 	user.Email = data.Email
 
 	// TODO: hash password
-	user.Password = data.Password
+	hasherBcrypt := hasher.NewBcryptHasher()
+	passwordHashed, errHash := hasherBcrypt.Generate(data.Password)
+	if errHash != nil {
+		return errHash
+	}
+	user.Password = passwordHashed
 
 	return usecase.repositories.User.Create(user)
 }
